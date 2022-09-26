@@ -26,6 +26,7 @@ namespace dotnet_rpg.Controllers
         }
 
         [HttpGet("{id}")]
+        // To Know more search for Attribute routing.
         public ActionResult<Character> Get(int id)
         {
             if (mockCharacters.Any(c => c.Id == id))
