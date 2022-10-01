@@ -20,6 +20,7 @@ namespace dotnet_rpg.Services.CaracterService
 
         public List<Character> AddCharacter(Character newCharacter)
         {
+            if (mockCharacters.Any(c => c.Id == newCharacter.Id)) return mockCharacters;
             mockCharacters.Add(newCharacter);
             return mockCharacters;
         }
@@ -29,9 +30,11 @@ namespace dotnet_rpg.Services.CaracterService
             return mockCharacters;
         }
 
-        public Character GetCharacter(int id)
+        public Character? GetCharacterById(int id)
         {
-            return mockCharacters.FirstOrDefault(c => c.Id == id);
+            if (mockCharacters.Any(c => c.Id == id))
+                return mockCharacters.Find(c => c.Id == id)!;
+            return null;
         }
     }
 }
