@@ -19,23 +19,23 @@ namespace dotnet_rpg.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Character>> Get()
+        public async Task<ActionResult<List<Character>>> Get()
         {
-            return Ok(_characterService.GetAllCharacters());
+            return Ok(await _characterService.GetAllCharacters());
         }
 
         [HttpGet("{id}")]
         // To Know more search for Attribute routing.
-        public ActionResult<Character> Get(int id)
+        public async Task<ActionResult<Character>> Get(int id)
         {
-            var character = _characterService.GetCharacterById(id);
+            var character = await _characterService.GetCharacterById(id);
             return character == null ? NotFound() : Ok(character);
         }
 
         [HttpPost]
-        public ActionResult Post(Character character)
+        public async Task<ActionResult> Post(Character character)
         {
-            return CreatedAtAction(nameof(Get), _characterService.AddCharacter(character));
+            return CreatedAtAction(nameof(Get), await _characterService.AddCharacter(character));
         }
     }
 }

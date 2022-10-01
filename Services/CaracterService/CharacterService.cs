@@ -18,19 +18,19 @@ namespace dotnet_rpg.Services.CaracterService
                 Defense = 50, Intelligence = 15, Class = RpgClass.Mage }
         };
 
-        public List<Character> AddCharacter(Character newCharacter)
+        public async Task<List<Character>> AddCharacter(Character newCharacter)
         {
             if (mockCharacters.Any(c => c.Id == newCharacter.Id)) return mockCharacters;
             mockCharacters.Add(newCharacter);
             return mockCharacters;
         }
 
-        public List<Character> GetAllCharacters()
+        public async Task<List<Character>> GetAllCharacters()
         {
             return mockCharacters;
         }
 
-        public Character? GetCharacterById(int id)
+        public async Task<Character>? GetCharacterById(int id)
         {
             if (mockCharacters.Any(c => c.Id == id))
                 return mockCharacters.Find(c => c.Id == id)!;
