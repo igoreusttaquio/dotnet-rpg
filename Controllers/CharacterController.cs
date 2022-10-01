@@ -41,7 +41,7 @@ namespace dotnet_rpg.Controllers
         {
             if (mockCharacters.Any(c => c.Id == character.Id)) return BadRequest();
             mockCharacters.Add(character);
-            return CreatedAtAction(nameof(Get), character, character.Id);
+            return CreatedAtAction(nameof(Get), mockCharacters);
         }
     }
 }
