@@ -61,12 +61,13 @@ namespace dotnet_rpg.Services.CaracterService
             {
                 Character character = mockCharacters.FirstOrDefault(c => c.Id == updateCharacter.Id);
 
-                character.Name = updateCharacter.Name;
-                character.HitPoints = updateCharacter.HitPoints;
-                character.Strength = updateCharacter.Strength;
-                character.Defense = updateCharacter.Defense;
-                character.Intelligence = updateCharacter.Intelligence;
-                character.Class = updateCharacter.Class;
+                _mapper.Map(source: updateCharacter, destination: character);
+                // character.Name = updateCharacter.Name;
+                // character.HitPoints = updateCharacter.HitPoints;
+                // character.Strength = updateCharacter.Strength;
+                // character.Defense = updateCharacter.Defense;
+                // character.Intelligence = updateCharacter.Intelligence;
+                // character.Class = updateCharacter.Class;
 
                 response.Data = _mapper.Map<GetCharacterDto>(character);
             }catch(Exception ex) {
