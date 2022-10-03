@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using dotnet_rpg.Dtos.Character;
 using dotnet_rpg.Models;
 
 namespace dotnet_rpg.Services.CaracterService
@@ -18,31 +20,40 @@ namespace dotnet_rpg.Services.CaracterService
                 Defense = 50, Intelligence = 15, Class = RpgClass.Mage }
         };
 
-        public async Task<ServiceResponse<List<Character>>> AddCharacter(Character newCharacter)
+        private readonly IMapper _mapper;
+        public CharacterService(IMapper mapper)
         {
-            var serviceResponse = new ServiceResponse<List<Character>>();
-
-            if (mockCharacters.Any(c => c.Id == newCharacter.Id)) return serviceResponse;
-            mockCharacters.Add(newCharacter);
-            serviceResponse.Data = mockCharacters;
+            _mapper = mapper;
+        }
+        public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
+        {
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            mockCharacters.Add(_mapper.Map<Character>(newCharacter));
+            serviceResponse.Data = GetAllCharactersToList();
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<Character>>> GetAllCharacters()
+        public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
-            var serviceResponse = new ServiceResponse<List<Character>>();
-            serviceResponse.Data = mockCharacters;
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            serviceResponse.Data = GetAllCharactersToList();
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Character>>? GetCharacterById(int id)
+        public async Task<ServiceResponse<GetCharacterDto>>? GetCharacterById(int id)
         {
-            var serviceResponse = new ServiceResponse<Character>();
+            var serviceResponse = new ServiceResponse<GetCharacterDto>();
             if (mockCharacters.Any(c => c.Id == id)){
-                serviceResponse.Data = mockCharacters.Find(c => c.Id == id)!;
+                var character = mockCharacters.Find(c => c.Id == id)!;
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
                 return serviceResponse;
             }
             return serviceResponse;
+        }
+
+        private List<GetCharacterDto> GetAllCharactersToList()
+        {
+            return mockCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
         }
     }
 }
