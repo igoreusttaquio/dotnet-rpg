@@ -70,7 +70,9 @@ namespace dotnet_rpg.Services.CaracterService
                 // character.Class = updateCharacter.Class;
 
                 response.Data = _mapper.Map<GetCharacterDto>(character);
-            }catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 response.Sucess = false;
                 response.Message = ex.Message;
 
@@ -79,6 +81,23 @@ namespace dotnet_rpg.Services.CaracterService
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            ServiceResponse<List<GetCharacterDto>> response = new();
+            try
+            {
+                Character character = mockCharacters.First(c => c.Id == id);
+                mockCharacters.Remove(character);
+                response.Data = GetAllCharactersToList();
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Sucess = false;
+            }
+
+            return response;
+        }
         private List<GetCharacterDto> GetAllCharactersToList()
         {
             return mockCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
