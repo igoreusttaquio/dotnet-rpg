@@ -28,7 +28,9 @@ namespace dotnet_rpg.Services.CaracterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            mockCharacters.Add(_mapper.Map<Character>(newCharacter));
+            Character character = _mapper.Map<Character>(newCharacter);
+            character.Id = mockCharacters.Max(c => c.Id) +1;
+            mockCharacters.Add(character);
             serviceResponse.Data = GetAllCharactersToList();
             return serviceResponse;
         }
