@@ -29,7 +29,7 @@ namespace dotnet_rpg.Services.CaracterService
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             Character character = _mapper.Map<Character>(newCharacter);
-            character.Id = mockCharacters.Max(c => c.Id) +1;
+            character.Id = mockCharacters.Max(c => c.Id) + 1;
             mockCharacters.Add(character);
             serviceResponse.Data = GetAllCharactersToList();
             return serviceResponse;
@@ -45,12 +45,37 @@ namespace dotnet_rpg.Services.CaracterService
         public async Task<ServiceResponse<GetCharacterDto>>? GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            if (mockCharacters.Any(c => c.Id == id)){
+            if (mockCharacters.Any(c => c.Id == id))
+            {
                 var character = mockCharacters.Find(c => c.Id == id)!;
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
                 return serviceResponse;
             }
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdtateCharacterDto updateCharacter)
+        {
+            ServiceResponse<GetCharacterDto> response = new();
+            try
+            {
+                Character character = mockCharacters.FirstOrDefault(c => c.Id == updateCharacter.Id);
+
+                character.Name = updateCharacter.Name;
+                character.HitPoints = updateCharacter.HitPoints;
+                character.Strength = updateCharacter.Strength;
+                character.Defense = updateCharacter.Defense;
+                character.Intelligence = updateCharacter.Intelligence;
+                character.Class = updateCharacter.Class;
+
+                response.Data = _mapper.Map<GetCharacterDto>(character);
+            }catch(Exception ex) {
+                response.Sucess = false;
+                response.Message = ex.Message;
+
+            }
+
+            return response;
         }
 
         private List<GetCharacterDto> GetAllCharactersToList()
