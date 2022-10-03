@@ -444,6 +444,9 @@ $RECYCLE.BIN/
 .idea/
 *.sln.iml
 
+*.db
+my-db*
+
 ##
 ## Visual Studio Code
 ##

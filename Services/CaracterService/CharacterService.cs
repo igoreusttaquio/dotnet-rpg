@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using dotnet_rpg.Data;
 using dotnet_rpg.Dtos.Character;
 using dotnet_rpg.Models;
 
@@ -21,16 +22,19 @@ namespace dotnet_rpg.Services.CaracterService
         };
 
         private readonly IMapper _mapper;
-        public CharacterService(IMapper mapper)
+        private readonly DataContext _context;
+
+        public CharacterService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             Character character = _mapper.Map<Character>(newCharacter);
-            character.Id = mockCharacters.Max(c => c.Id) + 1;
-            mockCharacters.Add(character);
+            _context.Characters.Add(character);
+            await _context.SaveChangesAsync();
             serviceResponse.Data = GetAllCharactersToList();
             return serviceResponse;
         }
@@ -45,9 +49,9 @@ namespace dotnet_rpg.Services.CaracterService
         public async Task<ServiceResponse<GetCharacterDto>>? GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            if (mockCharacters.Any(c => c.Id == id))
+            var character = _context.Characters.FirstOrDefault(c => c.Id == id);
+            if (character != null)
             {
-                var character = mockCharacters.Find(c => c.Id == id)!;
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
                 return serviceResponse;
             }
@@ -59,9 +63,10 @@ namespace dotnet_rpg.Services.CaracterService
             ServiceResponse<GetCharacterDto> response = new();
             try
             {
-                Character character = mockCharacters.FirstOrDefault(c => c.Id == updateCharacter.Id);
+                Character character = _context.Characters.FirstOrDefault(c => c.Id == updateCharacter.Id);
 
                 _mapper.Map(source: updateCharacter, destination: character);
+                await _context.SaveChangesAsync();
                 // character.Name = updateCharacter.Name;
                 // character.HitPoints = updateCharacter.HitPoints;
                 // character.Strength = updateCharacter.Strength;
@@ -86,8 +91,9 @@ namespace dotnet_rpg.Services.CaracterService
             ServiceResponse<List<GetCharacterDto>> response = new();
             try
             {
-                Character character = mockCharacters.First(c => c.Id == id);
-                mockCharacters.Remove(character);
+                Character character = _context.Characters.First(c => c.Id == id);
+                _context.Characters.Remove(character);
+                await _context.SaveChangesAsync();
                 response.Data = GetAllCharactersToList();
             }
             catch (Exception ex)
@@ -100,7 +106,7 @@ namespace dotnet_rpg.Services.CaracterService
         }
         private List<GetCharacterDto> GetAllCharactersToList()
         {
-            return mockCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            return _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
         }
     }
 }
