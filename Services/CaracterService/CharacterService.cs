@@ -46,7 +46,7 @@ namespace dotnet_rpg.Services.CaracterService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetCharacterDto>>? GetCharacterById(int id)
+        public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
             var character = _context.Characters.FirstOrDefault(c => c.Id == id);
