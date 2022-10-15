@@ -12,6 +12,7 @@ namespace dotnet_rpg.Models
         // salt to create a unique password hash
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public List<Character>? Characters { get; set; }
 
     }
 }
